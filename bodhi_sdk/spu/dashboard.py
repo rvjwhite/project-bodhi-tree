@@ -1,7 +1,8 @@
-# bodhi_sdk/spu/dashboard.py
+# bodhi_sdk/spu/dashboard.py (Corrected)
 
 import numpy as np
 
+# The ONLY change is putting 'VirtualSPU' in quotes.
 def display_spu_state(vspu: 'VirtualSPU', title: str, operation: str = ""):
     """Renders a text-based dashboard of the V-SPU's state."""
     np.set_printoptions(precision=2, suppress=True)
@@ -21,10 +22,12 @@ def display_spu_state(vspu: 'VirtualSPU', title: str, operation: str = ""):
         print(f"  {row}")
         
     print("\n[Output Register (Result)]:")
-    if vspu.OutputRegister.ndim == 1:
-        print(f"  {vspu.OutputRegister}")
+    # Handle both vector and matrix output gracefully
+    output = vspu.OutputRegister
+    if output.ndim == 1:
+        print(f"  {output}")
     else:
-        for i, row in enumerate(vspu.OutputRegister):
+        for i, row in enumerate(output):
             print(f"  {row}")
             
     print(border)

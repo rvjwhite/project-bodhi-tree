@@ -1,4 +1,4 @@
-# bodhi_sdk/gclm.py
+# bodhi_sdk/gclm.py (Corrected)
 
 from .goal import Goal
 from .causal_engine import CausalInferenceEngine
@@ -7,14 +7,16 @@ from .assembly_module import AssemblyModule
 
 class GCLMv3:
     """Represents a single instance of the Geometric-Causal Language Model."""
-    def __init__(self, spinor_dim=4, enable_dashboard=True):
+    def __init__(self, spinor_dim=4, enable_dashboard=True): # Pass flag here
         print("\nInitializing Project Bodhi Tree GCLM v3.0 instance...")
         self.cie = CausalInferenceEngine()
-        self.spu_driver = SPUDriver(spinor_dim=spinor_dim, enable_dashboard=enable_dashboard)
+        # The GCLM now creates the driver but doesn't use the dashboard itself
+        self.spu_driver = SPUDriver(spinor_dim=spinor_dim) 
         self.assembler = AssemblyModule()
         self.local_experts = {}
         print("GCLM Instance Ready.")
-
+        
+    # ... (rest of the file is unchanged, as it correctly calls the driver)
     def load_expert_from_dict(self, expert_name, expert_data):
         """Loads a pre-defined expert into the local library."""
         print(f"GCLM: Loading expert '{expert_name}' into local library.")

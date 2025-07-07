@@ -1,4 +1,4 @@
-# examples/creative_demo.py
+# examples/creative_demo.py (Corrected and Final)
 """
 Bodhi SDK Demo: Goal-Oriented Creative Synthesis
 
@@ -18,17 +18,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from bodhi_sdk.gclm import GCLMv3
 from bodhi_sdk.goal import Goal
+from bodhi_sdk.spu.dashboard import display_spu_state # The demo now imports the dashboard
 
 # --- 1. Define the Creative Problem ---
 
 def hydrodynamic_fitness(kernel: np.ndarray) -> float:
-    """A function that scores how 'good' a hull design (kernel) is."""
     test_force = np.array([1.0, 1.0])
     performance_vector = test_force @ kernel.T
-    speed = performance_vector[0]
-    instability = abs(performance_vector[1])
-    score = speed - (instability * 1.5)
-    return score
+    speed, instability = performance_vector[0], abs(performance_vector[1])
+    return speed - (instability * 1.5)
 
 boat_design_goal = Goal(
     description="Design a more hydrodynamic boat hull",
@@ -43,19 +41,16 @@ boat_design_goal = Goal(
 gclm_node = GCLMv3(spinor_dim=2)
 
 gclm_node.load_expert_from_dict("M_hull_prototype_v1", {
-    "type": "SPU_KERNEL", "domain": "engineering",
     "kernel": np.array([[1.2, 0.5], [0.1, 1.1]], dtype=np.float32)
 })
 gclm_node.load_expert_from_dict("M_fluid_dynamics_v1", {
-    "type": "SPU_KERNEL", "domain": "physics",
     "kernel": np.array([[1.5, -0.2], [0.0, 0.9]], dtype=np.float32)
 })
 gclm_node.load_expert_from_dict("M_material_rigidity_v1", {
-    "type": "SPU_KERNEL", "domain": "physics",
     "kernel": np.array([[0.9, 0.0], [0.0, 1.8]], dtype=np.float32)
 })
 
-# --- 3. Issue the Creative Challenge ---
+# --- 3. Issue the Creative Challenge with Interpretability ---
 
 print("="*60)
 print("      PROJECT BODHI TREE - CREATIVE SYNTHESIS DEMO")
@@ -63,6 +58,21 @@ print("="*60)
 print(f"TASK: '{boat_design_goal.description}'")
 print("\nGCLM will now attempt to invent a superior solution...")
 
+# --- NEW: We will now manually use the dashboard for interpretability ---
+base_kernel = gclm_node.local_experts[boat_design_goal.base_kernel_name]['kernel']
+explorer_kernel = gclm_node.local_experts[boat_design_goal.exploration_kernels[0]]['kernel']
+vspu = gclm_node.spu_driver.vspu
+
+# Show a single composition step visually
+print("\n--- Mechanistic Interpretability: Visualizing one composition step ---")
+vspu.load_tma(base_kernel)
+display_spu_state(vspu, "BEFORE Composition", "Compose fluid_dynamics on hull")
+final_matrix = gclm_node.spu_driver.execute_composition(base_kernel, explorer_kernel)
+display_spu_state(vspu, "AFTER Composition", "Compose fluid_dynamics on hull")
+print("This new matrix is one of many 'ideas' the GCLM will now test.")
+# --------------------------------------------------------------------------
+
+# Run the full creative process
 solution_packet = gclm_node.solve_creative_problem(boat_design_goal)
 
 # --- 4. Analyze the Result ---

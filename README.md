@@ -52,3 +52,34 @@ pip install -r requirements.txt
 |-- README.md
 |-- setup.py
 |-- requirements.txt
+
+#Python
+pycache/
+*.py[cod]
+*$py.class
+#Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+#Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
