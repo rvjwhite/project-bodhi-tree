@@ -23,3 +23,32 @@ Clone the repository and install the required dependencies.
 git clone [https://github.com/rvjwhite/project-bodhi-tree.git
 cd project-bodhi-tree
 pip install -r requirements.txt
+
+#File Structure
+
+/project-bodhi-tree
+|
+|-- bodhi_sdk/
+| |-- init.py
+| |-- gclm.py # Contains the GCLMv3 class
+| |-- goal.py # Contains the Goal data class
+| |-- assembly_module.py # The AoE merging logic
+| |-- causal_engine.py # The CIE and Curiosity/Planner modules
+| |-- spu/
+| | |-- init.py
+| | |-- virtual_spu.py # The V-SPU simulation
+| | |-- dashboard.py # The text-based visualizer
+| | |-- driver.py # The software driver
+|
+|-- examples/
+| |-- creative_demo.py # Our main, impressive demo
+|
+|-- tests/
+| |-- test_assembly_module.py
+| |-- test_virtual_spu.py
+|
+|-- .gitignore
+|-- LICENSE
+|-- README.md
+|-- setup.py
+|-- requirements.txt
